@@ -11,14 +11,17 @@ import javax.swing.JComponent;
 public class MyComponent extends JComponent {
 
 	static int counter = 0;
+	
+	static MutableCar theCar = new MutableCar(0,0,Color.BLACK);
 
 	public void paintComponent(Graphics g) {
 
-		Car car1 = new Car(0,0, Color.RED);
-		Car car2 = new Car(0,40, Color.BLUE);
+		theCar.setPosition(0, 0);
+		theCar.draw(g);
 		
-		car1.draw(g);
-		car2.draw(g);
+		//MutableCar car2 = new MutableCar(0,40, Color.BLUE);
+		theCar.setPosition(0, 40);
+		theCar.draw(g);
 		
 		System.out.println("Painted " + counter++ + " times");
 	}
