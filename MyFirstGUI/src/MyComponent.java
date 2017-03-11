@@ -11,10 +11,25 @@ import javax.swing.JComponent;
 
 public class MyComponent extends JComponent {
 
-	static int counter = 0;
+	private static int counter = 0;
 
-	static MutableCar theCar = new MutableCar(0,0,Color.BLACK, 10, 1);
-	static Random genRand = new Random();
+	private static MutableCar theCars[];
+	
+	private static Random genRand = new Random();
+	
+	private boolean someCarWon = false;
+	
+	public static final int laneHeight = 30;
+	
+	public boolean getSomeCarWon(){return someCarWon;}
+	
+	public MyComponent(int numCars){
+		theCars = new MutableCar[numCars];
+		for(int i =0; i<numCars; i++){
+			int laneY= i * laneHeight;
+			theCars[i]=new MutableCar(0, laneY, Color.BLUE, 0, 1);
+		}
+	}
 
 	public boolean carBumped(MutableCar c) {
 		return ((c.getCarDirection() > 0) && (c.getxPos()+60 >= this.getWidth()) 
@@ -32,27 +47,22 @@ public class MyComponent extends JComponent {
 	}
 
 
-	public void paintComponent(Graphics g) {		
-
-		theCar.draw(g);
-		theCar.move(theCar.getCarSpeed()*theCar.getCarDirection(), 0);
-
-		int deltay = 0;
-
-		if (this.carBumped(theCar)) {
-			theCar.setCarDirection(theCar.getCarDirection()*-1);
-			deltay = theCar.getCarDirectionY()*theCar.getCarSpeedY();
+	public void paintComponent(Graphics g) {	
+		
+		int iMax = 1;
+		for(int i=0; i < theCars.length; i++){
+			theCars[i].draw(g);
+			theCars[i].move(genRand.nextInt(10),0);
+			theCars[i].setColor(Color.BLUE);		
+			if(theCars[iMax].getxPos() < theCars[i].getxPos()){
+				iMax=i;	
+				
+			}
+			if (this.carBumped(theCars[iMax])) {
+				this.someCarWon=true;
+			}	
 		}
-		if (this.carReachedTopOrBottom(theCar)) {
-			theCar.setCarDirectionY(theCar.getCarDirectionY()*-1);
-		}
-		int deltax = theCar.getCarDirection()*theCar.getCarSpeed();
-		theCar.move(deltax, deltay);
-
-		//		//MutableCar car2 = new MutableCar(0,40, Color.BLUE);
-		//		theCar.setPosition(0, 40);
-		//		theCar.draw(g);
-
+		theCars[iMax].setColor(Color.RED);
 		System.out.println("Painted " + counter++ + " times");
 	}
 
